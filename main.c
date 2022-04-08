@@ -41,6 +41,19 @@ static void	show(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall, char **map)
 	}
 }
 
+static void	analize_bug(mlx_image_t *cat, mlx_image_t *wall)
+{
+	printf("\nAnalize_bug\n\n");
+	for (int i = 0, j; i < cat->count; i++) {
+		for (j = 0; j < wall->count; j++) {
+			if (&(cat->instances[i]) == &(wall->instances[j])) {
+				printf("Memory collision: %x\n", &(cat->instances[i]));
+				printf("Cat->instance[%d] = Wall->instance[%d]\n", i, j);
+			}
+		}
+	}
+}
+
 int32_t	main(void)
 {
 	mlx_t		*mlx;
@@ -56,7 +69,9 @@ int32_t	main(void)
 	map[0] = "111111";
 	map[1] = "100001";
 	map[2] = "111111";
+	analize_bug(cat, wall);
 	show(mlx, cat, wall, map);
+	analize_bug(cat, wall);
 	mlx_loop(mlx);
 	return (EXIT_SUCCESS);
 }

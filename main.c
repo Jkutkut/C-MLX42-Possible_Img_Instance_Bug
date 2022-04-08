@@ -28,14 +28,14 @@ static void	show(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall, char **map)
 			if (map[i][j] == '1')
 			{
 				printf("1");
-				mlx_image_to_window(mlx, cat, j * 64, i * 64);
-				// mlx_image_to_window(mlx, wall, j * 64, i * 64);
+				// mlx_image_to_window(mlx, cat, j * 64, i * 64);
+				mlx_image_to_window(mlx, wall, j * 64, i * 64);
 			}
 			else if (map[i][j] == '0')
 			{
 				printf("0");
-				// mlx_image_to_window(mlx, cat, j * 64, i * 64);
-				mlx_image_to_window(mlx, wall, j * 64, i * 64);
+				mlx_image_to_window(mlx, cat, j * 64, i * 64);
+				// mlx_image_to_window(mlx, wall, j * 64, i * 64);
 			}
 		}
 		printf("\n");
@@ -76,6 +76,17 @@ static void	analize_bug2(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall)
 	}
 }
 
+static void	analize_bug3(mlx_image_t *cat, mlx_image_t *wall)
+{
+	printf("\nAnalize_bug3\n\n");
+	printf("cat pixels : %p\n", cat->pixels);
+	printf("wall pixels: %p\n", wall->pixels);
+}
+
+static void hook(mlx_t *mlx) {
+	// sleep(3);
+	// mlx_close_window(mlx);
+}
 
 int32_t	main(void)
 {
@@ -96,6 +107,8 @@ int32_t	main(void)
 	show(mlx, cat, wall, map);
 	analize_bug(cat, wall);
 	analize_bug2(mlx, cat, wall);
+	analize_bug3(cat, wall);
+	mlx_loop_hook(mlx, &hook, mlx);
 	mlx_loop(mlx);
 	return (EXIT_SUCCESS);
 }

@@ -81,8 +81,8 @@ static void	analize_bug2(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall)
 		if (queue->image == wall) {
 			printf("Wall\n");
 		}
-		printf("  pos: (%d, %d),", queue->image->instances[queue->instanceid].x / 64, queue->image->instances[queue->instanceid].y / 64);
-		printf("  instanceid: %d/%d", queue->instanceid, queue->image->count);
+		printf("  pos: (%02d, %02d),", queue->image->instances[queue->instanceid].x / 64, queue->image->instances[queue->instanceid].y / 64);
+		printf("  instanceid: %02d/%02d", queue->instanceid, queue->image->count);
 		printf("\n");
 		lst = lst->next;
 	}
@@ -99,6 +99,30 @@ static void analize_bug4(mlx_image_t *cat, mlx_image_t *wall)
 {
 	printf("\nAnalize_bug4\n\n");
 	printf("Images are equal: %d\n", memcmp(cat->pixels, wall->pixels, cat->width * cat->height * sizeof(uint8_t)));
+}
+
+static void	analize_bug5(mlx_t *mlx)
+{
+	mlx_ctx_t		*ctx;
+	mlx_list_t		*lst;
+	draw_queue_t	*queue;
+
+	printf("\nAnalize_bug5 - Moving imgs\n\n");
+
+	ctx = mlx->context;
+	lst = ctx->render_queue;
+	int i = 0;
+	while (lst && i < 7) {
+		lst = lst->next;
+		i++;
+	}
+
+	queue = (draw_queue_t *)(lst->content);
+	mlx_image_t *img = queue->image;
+	// img->instances[queue->instanceid].y += 20;
+	for (int i = 0; i < img->count; i++)
+		img->instances[i].y += 20;
+	printf("0s should be 20px lower\n");
 }
 
 static void hook(mlx_t *mlx) {
@@ -127,6 +151,7 @@ int32_t	main(void)
 	analize_bug2(mlx, cat, wall);
 	analize_bug3(cat, wall);
 	analize_bug4(cat, wall);
+	analize_bug5(mlx);
 	mlx_loop_hook(mlx, &hook, mlx);
 	mlx_loop(mlx);
 	return (EXIT_SUCCESS);

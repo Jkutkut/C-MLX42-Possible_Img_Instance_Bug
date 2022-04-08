@@ -20,6 +20,27 @@ static mlx_image_t	*load_png(mlx_t *mlx, char *path)
 	return (img);
 }
 
+static void	show(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall, char **map)
+{
+	for (int i = 0, j; i < MAP_HEIGHT; i++) {
+		for (j = 0; j < MAP_WIDTH; j++) {
+			if (map[i][j] == '1')
+			{
+				printf("1");
+				mlx_image_to_window(mlx, cat, j * 64, i * 64);
+				// mlx_image_to_window(mlx, wall, j * 64, i * 64);
+			}
+			else if (map[i][j] == '0')
+			{
+				printf("0");
+				// mlx_image_to_window(mlx, cat, j * 64, i * 64);
+				mlx_image_to_window(mlx, wall, j * 64, i * 64);
+			}
+		}
+		printf("\n");
+	}
+}
+
 int32_t	main(void)
 {
 	mlx_t		*mlx;
@@ -36,21 +57,6 @@ int32_t	main(void)
 	map[1] = "100001";
 	map[2] = "111111";
 	show(mlx, cat, wall, map);
-	for (int i = 0, j; i < MAP_HEIGHT; i++) {
-		for (j = 0; j < MAP_WIDTH; j++) {
-			if (map[i][j] == '1')
-			{
-				printf("1");
-				mlx_image_to_window(mlx, cat, j * 64, i * 64);
-			}
-			else if (map[i][j] == '0')
-			{
-				printf("0");
-				mlx_image_to_window(mlx, wall, j * 64, i * 64);
-			}
-		}
-		printf("\n");
-	}
 	mlx_loop(mlx);
 	return (EXIT_SUCCESS);
 }

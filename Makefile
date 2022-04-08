@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS=-Wall -Wextra -Werror
+FLAGS=-Wall -Wextra #-Werror
 COMPILE=$(CC) $(FLAGS)
 
 NAME=so_long

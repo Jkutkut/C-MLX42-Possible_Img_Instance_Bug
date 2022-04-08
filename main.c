@@ -23,20 +23,29 @@ static mlx_image_t	*load_png(mlx_t *mlx, char *path)
 
 static void	show(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall, char **map)
 {
+	int instancesId[MAP_HEIGHT][MAP_WIDTH];
+
 	for (int i = 0, j; i < MAP_HEIGHT; i++) {
 		for (j = 0; j < MAP_WIDTH; j++) {
 			if (map[i][j] == '1')
 			{
 				printf("1");
-				// mlx_image_to_window(mlx, cat, j * 64, i * 64);
-				mlx_image_to_window(mlx, wall, j * 64, i * 64);
+				// instancesId[i][j] = mlx_image_to_window(mlx, cat, j * 64, i * 64);
+				instancesId[i][j] = mlx_image_to_window(mlx, wall, j * 64, i * 64);
 			}
 			else if (map[i][j] == '0')
 			{
 				printf("0");
-				mlx_image_to_window(mlx, cat, j * 64, i * 64);
-				// mlx_image_to_window(mlx, wall, j * 64, i * 64);
+				instancesId[i][j] = mlx_image_to_window(mlx, cat, j * 64, i * 64);
+				// instancesId[i][j] = mlx_image_to_window(mlx, wall, j * 64, i * 64);
 			}
+		}
+		printf("\n");
+	}
+	printf("\n\nInstances id:\n");
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		for (int j = 0; j < MAP_WIDTH; j++) {
+			printf("%2d ", instancesId[i][j]);
 		}
 		printf("\n");
 	}
@@ -61,17 +70,20 @@ static void	analize_bug2(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall)
 	mlx_list_t		*lst;
 	draw_queue_t	*queue;
 
-	printf("\nAnalize_bug2\n\n");
+	printf("\nAnalize_bug2 - Render queue\n\n");
 	ctx = mlx->context;
 	lst = ctx->render_queue;
 	while (lst) {
 		queue = (draw_queue_t *)(lst->content);
 		if (queue->image == cat) {
-			printf("Cat in render_queue\n");
+			printf("Cat\n");
 		}
 		if (queue->image == wall) {
-			printf("Wall in render_queue\n");
+			printf("Wall\n");
 		}
+		printf("  pos: (%d, %d),", queue->image->instances[queue->instanceid].x / 64, queue->image->instances[queue->instanceid].y / 64);
+		printf("  instanceid: %d/%d", queue->instanceid, queue->image->count);
+		printf("\n");
 		lst = lst->next;
 	}
 }
@@ -81,6 +93,12 @@ static void	analize_bug3(mlx_image_t *cat, mlx_image_t *wall)
 	printf("\nAnalize_bug3\n\n");
 	printf("cat pixels : %p\n", cat->pixels);
 	printf("wall pixels: %p\n", wall->pixels);
+}
+
+static void analize_bug4(mlx_image_t *cat, mlx_image_t *wall)
+{
+	printf("\nAnalize_bug4\n\n");
+	printf("Images are equal: %d\n", memcmp(cat->pixels, wall->pixels, cat->width * cat->height * sizeof(uint8_t)));
 }
 
 static void hook(mlx_t *mlx) {
@@ -108,6 +126,7 @@ int32_t	main(void)
 	analize_bug(cat, wall);
 	analize_bug2(mlx, cat, wall);
 	analize_bug3(cat, wall);
+	analize_bug4(cat, wall);
 	mlx_loop_hook(mlx, &hook, mlx);
 	mlx_loop(mlx);
 	return (EXIT_SUCCESS);

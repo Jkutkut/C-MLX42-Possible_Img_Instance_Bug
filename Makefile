@@ -23,11 +23,12 @@ $(NAME): $(LIB) $(BINS)
 %.o: %.c
 	$(COMPILE) $(FLAGS) -c $< -o $@
 
-$(LIB): $(dir $(LIB))
+$(LIB):
 	make -C $(dir $(LIB))
 
 $(dir $(LIB)):
 	git clone https://github.com/codam-coding-college/MLX42.git
+	make -C $(dir $(LIB))
 
 
 clean:

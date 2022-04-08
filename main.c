@@ -1,4 +1,5 @@
 #include "./MLX42/include/MLX42/MLX42.h"
+#include "./MLX42/include/MLX42/MLX42_Int.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -47,12 +48,34 @@ static void	analize_bug(mlx_image_t *cat, mlx_image_t *wall)
 	for (int i = 0, j; i < cat->count; i++) {
 		for (j = 0; j < wall->count; j++) {
 			if (&(cat->instances[i]) == &(wall->instances[j])) {
-				printf("Memory collision: %x\n", &(cat->instances[i]));
+				printf("Memory collision: %p\n", &(cat->instances[i]));
 				printf("Cat->instance[%d] = Wall->instance[%d]\n", i, j);
 			}
 		}
 	}
 }
+
+static void	analize_bug2(mlx_t *mlx, mlx_image_t *cat, mlx_image_t *wall)
+{
+	mlx_ctx_t		*ctx;
+	mlx_list_t		*lst;
+	draw_queue_t	*queue;
+
+	printf("\nAnalize_bug2\n\n");
+	ctx = mlx->context;
+	lst = ctx->render_queue;
+	while (lst) {
+		queue = (draw_queue_t *)(lst->content);
+		if (queue->image == cat) {
+			printf("Cat in render_queue\n");
+		}
+		if (queue->image == wall) {
+			printf("Wall in render_queue\n");
+		}
+		lst = lst->next;
+	}
+}
+
 
 int32_t	main(void)
 {
@@ -72,6 +95,7 @@ int32_t	main(void)
 	analize_bug(cat, wall);
 	show(mlx, cat, wall, map);
 	analize_bug(cat, wall);
+	analize_bug2(mlx, cat, wall);
 	mlx_loop(mlx);
 	return (EXIT_SUCCESS);
 }

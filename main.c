@@ -95,10 +95,21 @@ static void	analize_bug3(mlx_image_t *cat, mlx_image_t *wall)
 	printf("wall pixels: %p\n", wall->pixels);
 }
 
-static void analize_bug4(mlx_image_t *cat, mlx_image_t *wall)
+static void analize_img_content(mlx_image_t *cat, mlx_image_t *wall)
 {
 	printf("\nAnalize_bug4\n\n");
 	printf("Images are equal: %d\n", memcmp(cat->pixels, wall->pixels, cat->width * cat->height * sizeof(uint8_t)));
+
+	uint8_t i;
+	uint8_t j;
+	for (i = 0; i < cat->height; i++) {
+		for (j = 0; j < cat->width; j++) {
+			if (cat->pixels[i * cat->width + j] == wall->pixels[i * wall->width + j]) {
+				printf("Equals at pixel (%d, %d) -> color: %x\n", i, j, cat->pixels[i * cat->width + j]);
+				// printf("%d != %d\n", cat->pixels[i * cat->width + j], wall->pixels[i * cat->width + j]);
+			}
+		}
+	}
 }
 
 static void	analize_bug5(mlx_t *mlx)
@@ -126,8 +137,8 @@ static void	analize_bug5(mlx_t *mlx)
 }
 
 static void hook(mlx_t *mlx) {
-	// sleep(3);
-	// mlx_close_window(mlx);
+	sleep(2);
+	mlx_close_window(mlx);
 }
 
 int32_t	main(void)
@@ -142,6 +153,7 @@ int32_t	main(void)
 		exit(EXIT_FAILURE);
 	cat = load_png(mlx, "res/cat.png");
 	wall = load_png(mlx, "res/wall.png");
+	analize_img_content(cat, wall);
 	map[0] = "111111";
 	map[1] = "100001";
 	map[2] = "111111";
@@ -150,7 +162,7 @@ int32_t	main(void)
 	analize_bug(cat, wall);
 	analize_bug2(mlx, cat, wall);
 	analize_bug3(cat, wall);
-	analize_bug4(cat, wall);
+	analize_img_content(cat, wall);
 	analize_bug5(mlx);
 	mlx_loop_hook(mlx, &hook, mlx);
 	mlx_loop(mlx);

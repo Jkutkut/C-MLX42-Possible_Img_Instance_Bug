@@ -145,8 +145,8 @@ static void print_img(mlx_image_t *img)
 	printf("  pixels: %p\n", img->pixels);
 	printf("  instances: %p\n", img->instances);
 	printf("----------------------------------------------------\n");
-	for (uint32_t i = 0; i < img->height; i++) {
-		for (uint32_t j = 0; j < img->width; j++) {
+	for (uint8_t i = 0; i < img->height; i++) {
+		for (uint8_t j = 0; j < img->width; j++) {
 			printf("%02x ", img->pixels[i * img->height + j]);
 		}
 		printf("\n");
@@ -155,8 +155,8 @@ static void print_img(mlx_image_t *img)
 }
 
 static void hook(mlx_t *mlx) {
-	sleep(2);
-	mlx_close_window(mlx);
+	// sleep(2);
+	// mlx_close_window(mlx);
 }
 
 int32_t	main(void)

@@ -136,6 +136,24 @@ static void	analize_bug5(mlx_t *mlx)
 	printf("0s should be 20px lower\n");
 }
 
+static void print_img(mlx_image_t *img)
+{
+	printf("\nPrint img\n\n");
+	printf("  width: %d\n", img->width);
+	printf("  height: %d\n", img->height);
+	printf("  count: %d\n", img->count);
+	printf("  pixels: %p\n", img->pixels);
+	printf("  instances: %p\n", img->instances);
+	printf("----------------------------------------------------\n");
+	for (uint32_t i = 0; i < img->height; i++) {
+		for (uint32_t j = 0; j < img->width; j++) {
+			printf("%02x ", img->pixels[i * img->height + j]);
+		}
+		printf("\n");
+	}
+	printf("----------------------------------------------------\n\n\n1");
+}
+
 static void hook(mlx_t *mlx) {
 	sleep(2);
 	mlx_close_window(mlx);
@@ -153,7 +171,9 @@ int32_t	main(void)
 		exit(EXIT_FAILURE);
 	cat = load_png(mlx, "res/cat.png");
 	wall = load_png(mlx, "res/wall.png");
-	analize_img_content(cat, wall);
+	print_img(cat);
+	print_img(wall);
+	// analize_img_content(cat, wall);
 	map[0] = "111111";
 	map[1] = "100001";
 	map[2] = "111111";
@@ -162,7 +182,7 @@ int32_t	main(void)
 	analize_bug(cat, wall);
 	analize_bug2(mlx, cat, wall);
 	analize_bug3(cat, wall);
-	analize_img_content(cat, wall);
+	// analize_img_content(cat, wall);
 	analize_bug5(mlx);
 	mlx_loop_hook(mlx, &hook, mlx);
 	mlx_loop(mlx);
